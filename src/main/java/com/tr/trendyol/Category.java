@@ -1,11 +1,13 @@
 package com.tr.trendyol;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @EqualsAndHashCode(of = "name")
+@Getter
 public class Category
 {
 
@@ -13,7 +15,7 @@ public class Category
 
     Category parentCategory;
 
-    Set<Campaign> campaignList;
+    Set<Campaign> campaignList = new HashSet<>();
 
     public Category(String name)
     {
@@ -28,10 +30,6 @@ public class Category
 
     public void addCampaign(Campaign campaign)
     {
-        if (campaignList == null)
-        {
-            campaignList = new HashSet<Campaign>();
-        }
         campaignList.add(campaign);
     }
 }

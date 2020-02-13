@@ -1,36 +1,25 @@
 package com.tr.trendyol;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-import java.util.UUID;
-
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(callSuper = true)
 @Getter
-public class Campaign
+public class Campaign extends Discount
 {
-    UUID id;
-
     Category category;
 
-    DiscountType discountType;
-
-    Double amount;
-
-    Integer discountRate;
+    int minQuantity;
 
     public Campaign()
     {
-        this.id = UUID.randomUUID();
+        super();
     }
 
-    public Campaign(Category category, Double amount, Integer discountRate, DiscountType discountType)
+    public Campaign(Category category, Double amountOrRate, Integer minQuantity, DiscountType discountType)
     {
-        this.id = UUID.randomUUID();
+        super(discountType,amountOrRate);
         this.category = category;
-        this.amount = amount;
-        this.discountRate = discountRate;
-        this.discountType = discountType;
+        this.minQuantity = minQuantity;
     }
 }

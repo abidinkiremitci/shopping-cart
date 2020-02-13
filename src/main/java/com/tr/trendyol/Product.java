@@ -1,18 +1,20 @@
 package com.tr.trendyol;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
 @EqualsAndHashCode(of = "id")
+@Getter
 public class Product
 {
     UUID id;
 
     String title;
 
-    BigDecimal price;
+    double price;
 
     Category category;
 
@@ -21,11 +23,17 @@ public class Product
         id = UUID.randomUUID();
     }
 
-    public Product(String title, BigDecimal price, Category category)
+    public Product(String title, double price, Category category)
     {
         id = UUID.randomUUID();
         this.title = title;
         this.price = price;
         this.category = category;
+    }
+
+    public void addCampaing(Campaign campaign) {
+        if(campaign.getCategory().equals(category)) {
+            category.addCampaign(campaign);
+        }
     }
 }

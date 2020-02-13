@@ -1,18 +1,38 @@
 package com.tr.trendyol;
 
+import lombok.Setter;
+
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
 public class ShoppingCart
 {
+    static DecimalFormat decimalFormat = new DecimalFormat("##.00");
+
+    @Setter
+    DeliveryCostCalculator deliveryCostCalculator;
+
     Set<Item> itemList = new HashSet<>();
 
-    Set<Coupon> couponList;
+    Set<Coupon> couponList = new HashSet<>();
 
-    double discountAmount;
+    public ShoppingCart()
+    {
+    }
 
-    double totalAmount;
+    public ShoppingCart(DeliveryCostCalculator deliveryCostCalculator)
+    {
+        this.deliveryCostCalculator = deliveryCostCalculator;
+    }
+
+    public ShoppingCart(DeliveryCostCalculator deliveryCostCalculator, Set<Item> itemList, Set<Coupon> couponList)
+    {
+        this.deliveryCostCalculator = deliveryCostCalculator;
+        this.itemList = itemList;
+        this.couponList = couponList;
+    }
 
     public void addItem(final Product product, Integer quantity)
     {
@@ -42,31 +62,63 @@ public class ShoppingCart
 
     public void applyCoupon(Coupon coupon)
     {
-        if(couponList==null)
+        if (coupon != null)
         {
-            couponList = new HashSet<>();
+            couponList.add(coupon);
         }
-        couponList.add(coupon);
     }
 
-    public double getTotalAmountAfterDiscount()
+    public void applyCampaing(Campaign campaign)
     {
-        return 0;
+        if (campaign != null)
+        {
+            itemList.forEach(item -> item.addCampaign(campaign));
+        }
+    }
+
+    public double getTotalAmount()
+    {
+        double totalAmount = 0;
+        for (Item item : itemList)
+        {
+            totalAmount += item.getQuantity() * item.getProduct().getPrice();
+        }
+        return rountTwoDigit(totalAmount);
     }
 
     public double getCouponDiscount()
     {
-        return 0;
+        double couponDiscountAmount = 0;
+        double subTotal = getTotalAmount() - getCampaignDiscount();
+        for (Coupon coupon : couponList)
+        {
+            if (coupon.getMinPurchaseAmount() < subTotal)
+            {
+                double couponDiscount = coupon.getDiscount(subTotal);
+                couponDiscountAmount = couponDiscount > couponDiscountAmount ? couponDiscount : couponDiscountAmount;
+            }
+        }
+        return rountTwoDigit(couponDiscountAmount);
     }
 
     public double getCampaignDiscount()
     {
-        return 0;
+        double campaignDiscountAmount = 0;
+        for (Item item : itemList)
+        {
+            campaignDiscountAmount += item.calculateDiscount();
+        }
+        return rountTwoDigit(campaignDiscountAmount);
+    }
+
+    public double getTotalAmountAfterDiscount()
+    {
+        return rountTwoDigit(getTotalAmount() - getCampaignDiscount() - getCouponDiscount());
     }
 
     public double getDeliveryCost()
     {
-        return 0;
+        return deliveryCostCalculator.calculateFor(this);
     }
 
     public int getNoOfDeliveries()
@@ -76,13 +128,8 @@ public class ShoppingCart
         return categories.size();
     }
 
-    private void applyDiscounts()
+    double rountTwoDigit(double input)
     {
-
-    }
-
-    private void applyCoupons()
-    {
-
+        return (double) Math.round(input * 100) / 100;
     }
 }

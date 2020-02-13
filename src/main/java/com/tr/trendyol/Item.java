@@ -1,9 +1,7 @@
 package com.tr.trendyol;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
 
 @EqualsAndHashCode(of = "product")
 @Getter
@@ -12,9 +10,6 @@ public class Item
     Product product;
 
     Integer quantity;
-
-    @Setter
-    Double discountAmount;
 
     public Item(Product product, Integer quantity)
     {
@@ -28,5 +23,24 @@ public class Item
 
     public void updateQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public double calculateDiscount()
+    {
+        double productPrice = quantity * product.getPrice();
+        double discountAmount = 0;
+        for (Campaign campaign : product.getCategory().getCampaignList())
+        {
+            if(quantity >= campaign.getMinQuantity())
+            {
+                double discount = campaign.getDiscount(productPrice);
+                discountAmount = discountAmount > discount ? discountAmount : discount;
+            }
+        }
+        return discountAmount;
+    }
+
+    public void addCampaign(Campaign campaign) {
+        product.addCampaing(campaign);
     }
 }

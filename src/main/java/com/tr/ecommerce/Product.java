@@ -1,9 +1,8 @@
-package com.tr.trendyol;
+package com.tr.ecommerce;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 @EqualsAndHashCode(of = "id")

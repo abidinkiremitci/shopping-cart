@@ -1,4 +1,4 @@
-package com.tr.trendyol;
+package com.tr.ecommerce;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
